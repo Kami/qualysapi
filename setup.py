@@ -2,6 +2,8 @@
 
 import os
 import sys
+import re
+
 try:
     from setuptools import setup
 except ImportError:
@@ -13,7 +15,19 @@ __license__ = 'BSD-new'
 # Make pyflakes happy.
 __pkgname__ = None
 __version__ = None
-execfile('qualysapi/version.py')
+
+PKG_ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+os.chdir(PKG_ROOT_DIR)
+
+def get_version_string():
+    version_re = re.compile('__version__ = \'(.*?)\'')
+
+    with open(os.path.join(PKG_ROOT_DIR, 'qualysapi/version.py')) as fp:
+        content = fp.read()
+
+    match = version_re.search(content)
+    version = match.groups()[0]
+    return version
 
 # A utility function to read the README file into the long_description field.
 def read(fname):
@@ -23,7 +37,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name=__pkgname__,
-      version=__version__,
+      version=get_version_string(),
       author='Parag Baxi',
       author_email='parag.baxi@gmail.com',
       description='QualysGuard(R) Qualys API Package',
@@ -43,5 +57,7 @@ setup(name=__pkgname__,
       ],
       install_requires=[
           'requests',
+          'six',
+          'lxml'
       ],
      )

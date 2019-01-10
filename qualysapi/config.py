@@ -11,10 +11,13 @@ logging.basicConfig()
 # Setup module level logging.
 logger = logging.getLogger(__name__)
 
-from ConfigParser import *
+
+from six.moves.configparser import ConfigParser
+from six.moves import input as raw_input
+
 # try:
 #    from requests_ntlm import HttpNtlmAuth
-#except ImportError, e:
+#except ImportError as e:
 #    logger.warning('Warning: Cannot support NTML authentication.')
 
 import qualysapi.settings as qcs
@@ -76,7 +79,7 @@ class QualysConnectConfig:
                 self.max_retries = int(self.max_retries)
             except Exception:
                 logger.error('Value max_retries must be an integer.')
-                print 'Value max_retries must be an integer.'
+                print('Value max_retries must be an integer.')
                 exit(1)
             self._cfgparse.set('info', 'max_retries', str(self.max_retries))
         self.max_retries = int(self.max_retries)
